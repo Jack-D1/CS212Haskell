@@ -26,13 +26,23 @@ collatz n
 -- gencollatzdist (1+) (-4) == 5
 -- gencollatzdist (collatz) 1 == 0
 --Exercise 3(a)
+getClosestTwo::[Float]->Float
+getClosestTwo [x] = x
+getClosestTwo (x:y:xs)
+ | abs(x - sqrt(2)) < abs(y - sqrt(2)) = getClosestTwo (x:xs)
+ | abs(y - sqrt(2)) < abs(x - sqrt(2)) = getClosestTwo (y:xs)
 
+getClosest::Float->[Float]->Float
+getClosest f [x] = x
+getClosest f (x:y:xs)
+ | abs(x - sqrt(f)) < abs(y - sqrt(f)) = getClosest f (x:xs)
+ | abs(y - sqrt(f)) < abs(x - sqrt(f)) = getClosest f (y:xs)
 
 genFloatTwo::[Float]
 genFloatTwo = randomRs (0,2) (mkStdGen 42)
 
 approxsqrtTwo :: Int -> Float
-approxsqrtTwo n = undefined
+approxsqrtTwo n = getClosestTwo (take n genFloatTwo)
 
 -- Exercise 3(b)
 genFloat::Float -> [Float]
@@ -40,8 +50,7 @@ genFloat f = randomRs (0,f) (mkStdGen 42)
 
 
 approxsqrt :: Float -> Int -> Float
-approxsqrt = undefined
-
+approxsqrt f i = getClosest f (take i (genFloat f))
 --Exercise 4
 
 countocc :: Char -> String -> Int
